@@ -14,6 +14,7 @@ router.get('/admin', verifyAdmin, async (req, res) => {
     res.status(500).json({ message: 'Error fetching all forum data' });
   }
 });
+
 router.delete('/:id', authenticateUser, verifyAdmin, async (req, res) => {
   try {
     const forumPost = await Forum.findByIdAndDelete(req.params.id);

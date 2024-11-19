@@ -38,3 +38,26 @@ const verifyAdmin = async (req, res, next) => {
 };
 
 module.exports = verifyAdmin;
+
+
+// In your backend login route
+const loginUser = async (req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+
+  if (!user || !user.comparePassword(password)) {
+    return res.status(400).json({ message: 'Invalid credentials' });
+  }
+
+  const token = jwt.sign(
+    { id: user._id, isAdmin: user.isAdmin }, // Include isAdmin in the token payload
+    process.env.JWT_SECRET,
+    { expiresIn: '1h' }
+  );
+
+  // Send back the token and isAdmin
+  res.json({
+    token,
+    isAdmin: user.isAdmin,
+  });
+};
